@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -20,16 +21,32 @@ namespace Application.Activities
             public string Venue { get; set; }
         }
 
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Title).NotNull();
+                RuleFor(x => x.Description).NotNull();
+                RuleFor(x => x.Category).NotNull();
+                RuleFor(x => x.Date).NotNull();
+                RuleFor(x => x.City).NotNull();
+                RuleFor(x => x.Venue).NotNull();
+            }
+        }
+
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _dataContext;
 
-            public Handler(DataContext dataContext){
+            public Handler(DataContext dataContext)
+            {
                 this._dataContext = dataContext;
             }
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = new Activity {
+                var activity = new Activity
+                {
                     Id = request.Id,
                     Title = request.Title,
                     Description = request.Description,
@@ -41,8 +58,8 @@ namespace Application.Activities
 
                 _dataContext.Activities.Add(activity);
                 var success = await _dataContext.SaveChangesAsync() > 0;
-                
-                if(success)
+
+                if (success)
                     return Unit.Value;
 
                 throw new Exception("Problem saving changes.");

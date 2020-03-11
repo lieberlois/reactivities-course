@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
 using MediatR;
 using Persistence;
@@ -20,11 +22,15 @@ namespace Application.Activities
             public Handler(DataContext context)
             {
                 this._dataContext = context;
-            }
+            } // pause ab 11:38
 
             public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
             {
                 var activity = await _dataContext.Activities.FindAsync(request.Id);
+
+                if(activity == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not found."});
+
                 return activity;
             }
         }
