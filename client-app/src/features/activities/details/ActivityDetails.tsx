@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
-import ActivityStore from "../../../app/stores/activityStore";
 import { RouteComponentProps } from "react-router-dom";
 import { LoadingComponent } from "../../../app/layout/LoadingComponent";
 import ActivityDetailedHeader from "./ActivityDetailedHeader";
 import { ActivityDetailedInfo } from "./ActivityDetailedInfo";
 import { ActivityDetailedSidebar } from "./ActivityDetailedSidebar";
 import { ActivityDetailedChat } from "./ActivityDetailedChat";
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 interface IDetailParams {
   id: string;
@@ -16,18 +16,16 @@ interface IDetailParams {
 const ActivityDetails: React.FC<RouteComponentProps<IDetailParams>> = ({
   match
 }) => {
-  const activityStore = useContext(ActivityStore);
-  const { activity, loadActivity, loadingInitial } = activityStore;
+  const rootStore = useContext(RootStoreContext);
+  const { activity, loadActivity, loadingInitial } = rootStore.activityStore;
 
   useEffect(() => {
-    loadActivity(match.params.id)
+    loadActivity(match.params.id);
   }, [loadActivity, match.params.id]);
 
-  if (loadingInitial)
-    return <LoadingComponent content="Loading activity..." />;
+  if (loadingInitial) return <LoadingComponent content="Loading activity..." />;
 
-  if(!activity)
-    return <h2>Activity not found </h2>
+  if (!activity) return <h2>Activity not found </h2>;
 
   return (
     <Grid>
