@@ -27,6 +27,11 @@ axios.interceptors.response.use(undefined, error => {
     toast.error("Server error - check terminal for more info!");
   }
 
+  if (status === 401) {
+    toast.error("You have to be logged in to perform that action!");
+    history.push("/");
+  }
+
   throw error.response;
 });
 

@@ -28,7 +28,7 @@ namespace Application.Activities
                 var activity = await _dataContext.Activities.FindAsync(request.Id);
 
                 if (activity == null)
-                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not found."});
+                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not found." });
 
                 _dataContext.Activities.Remove(activity);
 
