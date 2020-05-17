@@ -53,12 +53,13 @@ namespace Application.User
             {
 
                 if (await _dataContext.Users.Where(x => x.Email == command.Email).AnyAsync())
-                    throw new RestException(HttpStatusCode.BadRequest, new {Email = "Email already exists"});
+                    throw new RestException(HttpStatusCode.BadRequest, new { Email = "Email already exists" });
 
                 if (await _dataContext.Users.Where(x => x.UserName == command.Username).AnyAsync())
-                    throw new RestException(HttpStatusCode.BadRequest, new {Email = "Username already exists"});
+                    throw new RestException(HttpStatusCode.BadRequest, new { Email = "Username already exists" });
 
-                var user = new AppUser {
+                var user = new AppUser
+                {
                     DisplayName = command.DisplayName,
                     Email = command.Email,
                     UserName = command.Username
@@ -67,11 +68,12 @@ namespace Application.User
                 var result = await _userManager.CreateAsync(user, command.Password);
 
                 if (result.Succeeded)
-                    return new User {
+                    return new User
+                    {
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user),
                         Username = user.UserName,
-                        Image = null
+                        Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
                     };
 
                 throw new Exception("Problem creating user.");
