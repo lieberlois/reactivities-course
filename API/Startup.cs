@@ -4,6 +4,7 @@ using API.Middleware;
 using API.SignalR;
 using Application.Activities;
 using Application.Interfaces;
+using Application.Profiles;
 using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
@@ -87,6 +88,7 @@ namespace API
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IProfileReader, ProfileReader>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
 
